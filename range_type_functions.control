@@ -1,4 +1,4 @@
 # range_type_functions extension
-comment = 'A short description'
-default_version = '0.0.1'
+comment = 'Functions for enhancing range type functionality.'
+default_version = '0.0.2'
 relocatable = true

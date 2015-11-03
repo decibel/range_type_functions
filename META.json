@@ -1,25 +1,35 @@
 {
     "name": "range_type_functions",
-    "abstract": "A short description",
-    "description": "A long description",
-    "version": "0.0.1",
-    "maintainer": "The maintainer's name",
+    "abstract": "Functions for enhancing range type functionality.",
+    "description": "Functions for enhancing range type functionality. Some of the functions are new features, and some are backports of functions found in newer(9.5+) versions of PostgreSQL.",
+    "version": "0.0.2",
+    "maintainer": [ "Corey Huinker <corey.huinker@moat.com>" ],
     "license": "postgresql",
     "provides": {
         "range_type_functions": {
-            "abstract": "A short description",
+            "abstract": "Functions for enhancing range type functionality.",
             "file": "sql/range_type_functions.sql",
             "docfile": "doc/range_type_functions.md",
-            "version": "0.0.1"
+            "version": "0.0.2"
         }
     },
     "release_status": "unstable",
 
-    "generated_by": "The maintainer's name",
+    "generated_by": "Corey Huinker",
 
-
+    "resources": {
+        "bugtracker": {
+            "web": "https://github.com/moat/range_type_functions/issues"
+        },
+        "repository": {
+            "url": "git://github.com/moat/range_type_functions.git" ,
+            "web": "https://github.com/moat/range_type_functions",
+            "type": "git"
+        }
+    },    
     "meta-spec": {
         "version": "1.0.0",
         "url": "http://pgxn.org/meta/spec.txt"
-    }
+    },
+    "tags": [ "range", "types" ]
 }
