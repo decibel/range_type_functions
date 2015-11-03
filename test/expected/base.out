@@ -1,0 +1,63 @@
+begin;
+\set ECHO none
+set datestyle = 'ISO';
+select to_range(4,5,'[]',null::int4range);
+ to_range 
+----------
+ [4,6)
+(1 row)
+
+select to_range('2015-01-01'::date,'2016-01-1','[)',null::daterange);
+        to_range         
+-------------------------
+ [2015-01-01,2016-01-01)
+(1 row)
+
+select to_range(4,null::int4range);
+ to_range 
+----------
+ [4,5)
+(1 row)
+
+select to_range('2015-01-01'::date,null::daterange);
+        to_range         
+-------------------------
+ [2015-01-01,2015-01-02)
+(1 row)
+
+select element_range_comp(4,'[10,100]'::int4range);
+ element_range_comp 
+--------------------
+                 -1
+(1 row)
+
+select element_range_comp(10,'[10,100]'::int4range);
+ element_range_comp 
+--------------------
+                  0
+(1 row)
+
+select element_range_comp(110,'[10,100]'::int4range);
+ element_range_comp 
+--------------------
+                  1
+(1 row)
+
+select is_singleton('[4,5)'::int4range);
+ is_singleton 
+--------------
+ t
+(1 row)
+
+select is_singleton('[4,5]'::int4range);
+ is_singleton 
+--------------
+ f
+(1 row)
+
+select range_merge('[4,5]'::int4range,'[9,10]'::int4range);
+ range_merge 
+-------------
+ [4,11)
+(1 row)
+
