@@ -112,6 +112,143 @@ select is_singleton('[4,5]'::int4range);
 (1 row)
 ```
 
+### express_lower_bound_condition
+
+Given a range, express the simple where clause that would match the lower bound condition using range using only scalar comparisions.
+
+```sql
+create function express_lower_bound_condition(range anyrange, placeholder text default 'x') returns text
+```
+
+#### Examples
+```sql
+select express_lower_bound_condition('empty'::int4range);
+ express_lower_bound_condition 
+-------------------------------
+ false
+(1 row)
+
+select express_lower_bound_condition('(,)'::int4range);
+ express_lower_bound_condition 
+-------------------------------
+ true
+(1 row)
+
+select express_lower_bound_condition('(4,5]'::int4range);
+ express_lower_bound_condition 
+-------------------------------
+ x >= '5'
+(1 row)
+
+select express_lower_bound_condition('(4,5]'::int4range,'y.z');
+ express_lower_bound_condition 
+-------------------------------
+ y.z >= '5'
+(1 row)
+
+select express_lower_bound_condition('[4,5]'::int4range,'y.z');
+ express_lower_bound_condition 
+-------------------------------
+ y.z >= '4'
+(1 row)
+
+select express_lower_bound_condition('[4,5]'::int4range,format('%I.%I','my schema','my ColuMnaME'));
+   express_lower_bound_condition   
+-----------------------------------
+ "my schema"."my ColuMnaME" >= '4'
+(1 row)
+```
+
+### express_upper_bound_condition
+
+Given a range, express the simple where clause that would match the uppper bound condition using range using only scalar comparisions.
+
+```sql
+create function express_upper_bound_condition(range anyrange, placeholder text default 'x') returns text
+```
+
+#### Examples
+
+```sql
+select express_upper_bound_condition('empty'::int4range);
+ express_upper_bound_condition 
+-------------------------------
+ false
+(1 row)
+
+select express_upper_bound_condition('(,)'::int4range);
+ express_upper_bound_condition 
+-------------------------------
+ true
+(1 row)
+
+select express_upper_bound_condition('[4,5)'::int4range,'y.z');
+ express_upper_bound_condition 
+-------------------------------
+ y.z < '5'
+(1 row)
+
+select express_upper_bound_condition('[4,5]'::int4range,'y.z');
+ express_upper_bound_condition 
+-------------------------------
+ y.z < '6'
+(1 row)
+```
+
+### express_bounds_conditions
+
+Given a range, express the simple where clause that would match the uppper and lower bound conditions using range using only scalar comparisions.
+
+```sql
+create function express_upper_bounds_conditions(range anyrange, placeholder text default 'x') returns text
+```
+
+#### Examples
+
+```sql
+select express_bounds_conditions('empty'::int4range);
+ express_bounds_conditions 
+---------------------------
+ false
+(1 row)
+
+select express_bounds_conditions('(,)'::int4range);
+ express_bounds_conditions 
+---------------------------
+ true
+(1 row)
+
+select express_bounds_conditions('(4,5]'::int4range);
+ express_bounds_conditions 
+---------------------------
+ x >= '5' and x < '6'
+(1 row)
+
+select express_bounds_conditions('(4,5]'::int4range,'y.z');
+ express_bounds_conditions 
+---------------------------
+ y.z >= '5' and y.z < '6'
+(1 row)
+
+select express_bounds_conditions('[4,5]'::int4range,'y.z');
+ express_bounds_conditions 
+---------------------------
+ y.z >= '4' and y.z < '6'
+(1 row)
+
+select express_bounds_conditions('[4,5)'::int4range,'y.z');
+ express_bounds_conditions 
+---------------------------
+ y.z >= '4' and y.z < '5'
+(1 row)
+
+select express_bounds_conditions('[4,5]'::int4range,'y.z');
+ express_bounds_conditions 
+---------------------------
+ y.z >= '4' and y.z < '6'
+(1 row)
+```
+
 ## Functions backported to 9.4
 
 ### range_merge()
@@ -125,6 +262,7 @@ select range_merge('[4,5]'::int4range,'[9,10]'::int4range);
  [4,11)
 (1 row)
 ```
+
 
 ### Support
 

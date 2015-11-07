@@ -50,3 +50,54 @@ grant execute on function is_singleton(anyrange) to public;
 comment on function is_singleton(range anyrange)
 is E'Returns true if the range has only one possible element.';
 
+create function express_lower_bound_condition(range anyrange, placeholder text default 'x') returns text
+language sql immutable as $$
+select  case
+            when lower_inf(range) then 'true'
+            when isempty(range) then 'false'
+            when lower_inc(range) then format('%s >= %L',placeholder,lower(range))
+            else format('%s > %L',placeholder,lower(range))
+        end;
+$$;
+
+comment on function express_lower_bound_condition(anyrange,text)
+is E'Given a range and a placeholder value, construct the where-clause fragment for the lower bound of the range\n';
+
+grant execute on function express_lower_bound_condition(anyrange,text) to public;
+
+create function express_upper_bound_condition(range anyrange, placeholder text default 'x') returns text
+language sql immutable as $$
+select  case
+            when upper_inf(range) then 'true'
+            when isempty(range) then 'false'
+            when upper_inc(range) then format('%s <= %L',placeholder,upper(range))
+            else format('%s < %L',placeholder,upper(range))
+        end;
+$$;
+
+comment on function express_upper_bound_condition(anyrange,text)
+is E'Given a range and a placeholder value, construct the where-clause fragment for the upper bound of the range';
+
+grant execute on function express_upper_bound_condition(anyrange,text) to public;
+
+create function express_bounds_conditions(range anyrange, placeholder text default 'x') returns text
+language sql immutable as $$
+select  case
+            when lower(range) = upper(range) then format('%s = %L',placeholder,lower(range))
+            when isempty(range) then 'false'
+            when lower_inf(range) and upper_inf(range) then 'true'
+            when lower_inf(range) then express_upper_bound_condition(range,placeholder)
+            when upper_inf(range) then express_lower_bound_condition(range,placeholder)
+            else format('%s and %s',
+                        express_lower_bound_condition(range,placeholder),
+                        express_upper_bound_condition(range,placeholder))
+        end;
+$$;
+
+comment on function express_bounds_conditions(anyrange,text)
+is E'Given a range and a placeholder value, construct the where-clause fragment for the range';
+
+grant execute on function express_bounds_conditions(anyrange,text) to public;
+
+
+

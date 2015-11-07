@@ -28,4 +28,27 @@ select is_singleton('[4,5]'::int4range);
 
 select range_merge('[4,5]'::int4range,'[9,10]'::int4range);
 
+select express_lower_bound_condition('empty'::int4range);
+select express_lower_bound_condition('(,)'::int4range);
+select express_lower_bound_condition('(4,5]'::int4range);
+select express_lower_bound_condition('(4,5]'::int4range,'y.z');
+select express_lower_bound_condition('[4,5]'::int4range,'y.z');
+select express_lower_bound_condition('[4,5]'::int4range,format('%I.%I','my schema','my ColuMnaME'));
+select express_upper_bound_condition('empty'::int4range);
+select express_upper_bound_condition('(,)'::int4range);
+select express_upper_bound_condition('[4,5)'::int4range,'y.z');
+select express_upper_bound_condition('[4,5]'::int4range,'y.z');
+select express_bounds_conditions('empty'::int4range);
+select express_bounds_conditions('(,)'::int4range);
+select express_bounds_conditions('(4,5]'::int4range);
+select express_bounds_conditions('(4,5]'::int4range,'y.z');
+select express_bounds_conditions('[4,5]'::int4range,'y.z');
+select express_bounds_conditions('[4,5)'::int4range,'y.z');
+select express_bounds_conditions('[4,5]'::int4range,'y.z');
+
+
+
+
+
+
 
