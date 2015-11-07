@@ -1,4 +1,4 @@
 # range_type_functions extension
 comment = 'Functions for enhancing range type functionality.'
-default_version = '0.0.2'
+default_version = '0.0.3'
 relocatable = true
