@@ -30,7 +30,7 @@ all: sql/$(EXTENSION)--$(EXTVERSION).sql
 sql/$(EXTENSION)--$(EXTVERSION).sql: $(SQL_FILES)
 	cat $^ > $@
 
-DATA = $(wildcard sql/*--*.sql) sql/$(EXTENSION)--$(EXTVERSION).sql
+DATA = $(wildcard sql/*--*.sql)
 EXTRA_CLEAN = sql/$(EXTENSION)--$(EXTVERSION).sql
 
 PGXS := $(shell $(PG_CONFIG) --pgxs)
