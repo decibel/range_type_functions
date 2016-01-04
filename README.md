@@ -7,7 +7,7 @@ This extension serves two purposes:
 2. Facilitate back-porting of functions from newer versions of PostgreSQL.
 
 ## USAGE
-For function documentation and examples, see the [range_type_functions.md file](doc/range_type_functions.md).
+For function documentation and examples, see the [range_type_functions.md file](https://github.com/moat/range_type_functions/blob/master/doc/range_type_functions.md).
 
 ## INSTALLATION
 
