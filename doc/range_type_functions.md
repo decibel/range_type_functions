@@ -35,6 +35,7 @@ select to_range('2015-01-01'::date,'2016-01-1','[)',null::daterange);
 -------------------------
  [2015-01-01,2016-01-01)
 (1 row)
+```
 
 ```sql
 function to_range( elem anyelement, range anyrange) returns anyrange
@@ -112,142 +113,234 @@ select is_singleton('[4,5]'::int4range);
 (1 row)
 ```
 
-### express_lower_bound_condition
+### get_lower_bound_condition
 
 Given a range, express the simple where clause that would match the lower bound condition using range using only scalar comparisions.
 
 ```sql
-create function express_lower_bound_condition(range anyrange, placeholder text default 'x') returns text
+create function get_lower_bound_condition(range anyrange, placeholder text default 'x') returns text
 ```
 
 #### Examples
 ```sql
-select express_lower_bound_condition('empty'::int4range);
- express_lower_bound_condition 
+select get_lower_bound_condition('empty'::int4range);
+ get_lower_bound_condition 
 -------------------------------
  false
 (1 row)
 
-select express_lower_bound_condition('(,)'::int4range);
- express_lower_bound_condition 
+select get_lower_bound_condition('(,)'::int4range);
+ get_lower_bound_condition 
 -------------------------------
  true
 (1 row)
 
-select express_lower_bound_condition('(4,5]'::int4range);
- express_lower_bound_condition 
+select get_lower_bound_condition('(4,5]'::int4range);
+ get_lower_bound_condition 
 -------------------------------
  x >= '5'
 (1 row)
 
-select express_lower_bound_condition('(4,5]'::int4range,'y.z');
- express_lower_bound_condition 
+select get_lower_bound_condition('(4,5]'::int4range,'y.z');
+ get_lower_bound_condition 
 -------------------------------
  y.z >= '5'
 (1 row)
 
-select express_lower_bound_condition('[4,5]'::int4range,'y.z');
- express_lower_bound_condition 
+select get_lower_bound_condition('[4,5]'::int4range,'y.z');
+ get_lower_bound_condition 
 -------------------------------
  y.z >= '4'
 (1 row)
 
-select express_lower_bound_condition('[4,5]'::int4range,format('%I.%I','my schema','my ColuMnaME'));
-   express_lower_bound_condition   
+select get_lower_bound_condition('[4,5]'::int4range,format('%I.%I','my schema','my ColuMnaME'));
+   get_lower_bound_condition   
 -----------------------------------
  "my schema"."my ColuMnaME" >= '4'
 (1 row)
 ```
 
-### express_upper_bound_condition
+### get_upper_bound_condition
 
 Given a range, express the simple where clause that would match the uppper bound condition using range using only scalar comparisions.
 
 ```sql
-create function express_upper_bound_condition(range anyrange, placeholder text default 'x') returns text
+create function get_upper_bound_condition(range anyrange, placeholder text default 'x') returns text
 ```
 
 #### Examples
 
 ```sql
-select express_upper_bound_condition('empty'::int4range);
- express_upper_bound_condition 
+select get_upper_bound_condition('empty'::int4range);
+ get_upper_bound_condition 
 -------------------------------
  false
 (1 row)
 
-select express_upper_bound_condition('(,)'::int4range);
- express_upper_bound_condition 
+select get_upper_bound_condition('(,)'::int4range);
+ get_upper_bound_condition 
 -------------------------------
  true
 (1 row)
 
-select express_upper_bound_condition('[4,5)'::int4range,'y.z');
- express_upper_bound_condition 
+select get_upper_bound_condition('[4,5)'::int4range,'y.z');
+ get_upper_bound_condition 
 -------------------------------
  y.z < '5'
 (1 row)
 
-select express_upper_bound_condition('[4,5]'::int4range,'y.z');
- express_upper_bound_condition 
+select get_upper_bound_condition('[4,5]'::int4range,'y.z');
+ get_upper_bound_condition 
 -------------------------------
  y.z < '6'
 (1 row)
 ```
 
-### express_bounds_conditions
+### get_bounds_condition_expr
 
 Given a range, express the simple where clause that would match the uppper and lower bound conditions using range using only scalar comparisions.
 
 ```sql
-create function express_upper_bounds_conditions(range anyrange, placeholder text default 'x') returns text
+create function get_upper_bounds_conditions(range anyrange, placeholder text default 'x') returns text
 ```
 
 #### Examples
 
 ```sql
-select express_bounds_conditions('empty'::int4range);
- express_bounds_conditions 
+select get_bounds_condition_expr('empty'::int4range);
+ get_bounds_condition_expr 
 ---------------------------
  false
 (1 row)
 
-select express_bounds_conditions('(,)'::int4range);
- express_bounds_conditions 
+select get_bounds_condition_expr('(,)'::int4range);
+ get_bounds_condition_expr 
 ---------------------------
  true
 (1 row)
 
-select express_bounds_conditions('(4,5]'::int4range);
- express_bounds_conditions 
----------------------------
- x >= '5' and x < '6'
+select get_bounds_condition_expr('(4,5]'::int4range);
+       get_bounds_condition_expr        
+----------------------------------------
+ x >= '5'::integer and x < '6'::integer
 (1 row)
 
-select express_bounds_conditions('(4,5]'::int4range,'y.z');
- express_bounds_conditions 
----------------------------
- y.z >= '5' and y.z < '6'
+select get_bounds_condition_expr('(4,5]'::int4range,'y.z');
+         get_bounds_condition_expr          
+--------------------------------------------
+ y.z >= '5'::integer and y.z < '6'::integer
 (1 row)
 
-select express_bounds_conditions('[4,5]'::int4range,'y.z');
- express_bounds_conditions 
----------------------------
- y.z >= '4' and y.z < '6'
+select get_bounds_condition_expr('[4,5]'::int4range,'y.z');
+         get_bounds_condition_expr          
+--------------------------------------------
+ y.z >= '4'::integer and y.z < '6'::integer
 (1 row)
 
-select express_bounds_conditions('[4,5)'::int4range,'y.z');
- express_bounds_conditions 
----------------------------
- y.z >= '4' and y.z < '5'
+select get_bounds_condition_expr('[4,5)'::int4range,'y.z');
+         get_bounds_condition_expr          
+--------------------------------------------
+ y.z >= '4'::integer and y.z < '5'::integer
 (1 row)
 
-select express_bounds_conditions('[4,5]'::int4range,'y.z');
- express_bounds_conditions 
----------------------------
- y.z >= '4' and y.z < '6'
+select get_bounds_condition_expr('[4,5]'::int4range,'y.z');
+         get_bounds_condition_expr          
+--------------------------------------------
+ y.z >= '4'::integer and y.z < '6'::integer
 (1 row)
 ```
+
+### get_bound_expr
+
+Express a value casted as the subtype of the given range.
+
+```sql
+create function get_bound_expr(range anyrange, literal anyelement) returns text
+```
+
+#### Examples
+
+```sql
+select get_bound_expr(null::int4range,'4');
+ get_bound_expr 
+----------------
+ '4'::integer
+(1 row)
+
+select get_bound_expr(null::daterange,'1991-09-23');
+   get_bound_expr   
+--------------------
+ '1991-09-23'::date
+(1 row)
+
+select get_bound_expr(null::textrange,'ABEL');
+         get_bound_expr         
+--------------------------------
+ 'ABEL'::text COLLATE "default"
+(1 row)
+
+select get_bound_expr(null::textrange_c,'ABEL');
+      get_bound_expr      
+--------------------------
+ 'ABEL'::text COLLATE "C"
+(1 row)
+```
+
+### get_collation_expr
+
+Return the collation statement for a range type. Return null if the base type of the range does not use collation.
+
+```sql
+create function get_collation_expr(range anyrange) returns text
+```
+
+#### Examples
+
+```sql
+select get_collation_expr(null::int4range);
+ get_collation_expr 
+--------------------
+ 
+(1 row)
+
+select get_collation_expr(null::textrange);
+ get_collation_expr 
+--------------------
+  COLLATE "default"
+(1 row)
+
+select get_collation_expr(null::textrange_c);
+ get_collation_expr 
+--------------------
+  COLLATE "C"
+(1 row)
+```
+
+### get_subtype_element_expr
+
+Express a valid subtype by name with proper collation
+
+```sql
+create function get_subtype_element_expr(range anyrange, placeholder text default 'x') returns text
+```
+
+#### Examples
+
+```sql
+select get_subtype_element_expr('(4,5]'::int4range);
+ get_subtype_element_expr 
+--------------------------
+ x
+(1 row)
+
+select get_subtype_element_expr('[ABEL,BAKER)'::textrange_c);
+ get_subtype_element_expr 
+--------------------------
+ x COLLATE "C"
+(1 row)
+```
+
+
 
 ## Functions backported to 9.4
 
