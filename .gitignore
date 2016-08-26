@@ -1,8 +1,29 @@
-results/
-*.so
-tmp/
+# Editor files
+.*.swp
+
+# Explicitly exclude META.json!
+!/META.json
+
+# Generated make files
+meta.mk
+
+# Compiler output
 *.o
+*.so
+.deps/
+
+# built targets
+/sql/*--*
+!/sql/*--*--*.sql
+
+# This file is created by make
+sql/range_type_functions.sql
+
+# Test artifacts
+results/
 regression.diffs
 regression.out
-/sql/range_type_functions--*
-!/sql/range_type_functions--*--*.sql
+
+# Misc
+tmp/
+.DS_Store
