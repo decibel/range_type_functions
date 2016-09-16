@@ -16,9 +16,6 @@ meta.mk
 /sql/*--*
 !/sql/*--*--*.sql
 
-# This file is created by make
-sql/range_type_functions.sql
-
 # Test artifacts
 results/
 regression.diffs
