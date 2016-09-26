@@ -1,7 +1,7 @@
 SELECT plan(
   0
   + 1 * (SELECT count(*)::int FROM test)
---  + 2 * (SELECT count(*)::int FROM test)
+--  + 2 * (SELECT count(*)::int FROM test) -- Creation functions
 );
 
 SELECT is(
@@ -28,3 +28,5 @@ SELECT is(
 */
 
 \i test/pgxntool/finish.sql
+
+-- vi: expandtab ts=2 sw=2
