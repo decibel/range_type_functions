@@ -2,7 +2,6 @@ begin;
 \set ECHO none
 
 \i sql/range_type_functions.sql
-\i sql/range_type_functions_94.sql
 
 \set ECHO all
 
