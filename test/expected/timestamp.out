@@ -1,0 +1,5 @@
+\set ECHO none
+1..2
+ok 1 - range__create from now() +/- 1us
+ok 2 - range__create from timezone test
+# TRANSACTION INTENTIONALLY LEFT OPEN!
