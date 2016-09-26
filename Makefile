@@ -1,5 +1,12 @@
 include pgxntool/base.mk
 
+-- TODO: Remove this after merging pgxntool 0.2.1+
+testdeps: $(TEST_SQL_FILES) $(TEST_SOURCE_FILES)
+
+TEST_HELPER_FILES		= $(wildcard $(TESTDIR)/helpers/*.sql)
+testdeps: $(TEST_HELPER_FILES)
+
+
 PG94 = (call test, $(MAJORVER), -eq, 94)
 LT94 = (call test, $(MAJORVER), -lt, 94)
 

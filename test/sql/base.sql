@@ -1,8 +1,9 @@
 begin;
 \set ECHO none
 
-\i sql/range_type_functions.sql
-\i sql/range_type_functions_94.sql
+CREATE EXTENSION IF NOT EXISTS range_type_functions;
+--\i sql/range_type_functions.sql
+--\i sql/range_type_functions_94.sql
 
 \set ECHO all
 
