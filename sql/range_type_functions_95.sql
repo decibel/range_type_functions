@@ -168,12 +168,7 @@ SET search_path FROM CURRENT -- This is necessary for having access to the range
 AS $_range_from_array__create$
 DECLARE
     subtype regtype;
-
-    /*
-    * THIS IS INTENTIONALLY regproc! Using regproc ensures we get an error if
-    * the function isn't unique.
-    */
-    creation_function regproc;
+    creation_function regprocedure;
 
     c_template CONSTANT text := $template$
 -- This is a template!
@@ -200,7 +195,7 @@ BEGIN
                 $$%1$s(%2$s, %2$s, text)$$
                 , t.range_type -- Blindly assume function has same name as the range type
                 , range_subtype
-            )::regprocedure::oid -- Note that this gets cast back to regproc. Cast to OID is mandatory for 9.4
+            )
         FROM range_type t
         WHERE t.range_type = _range_from_array__create.range_type
     ;
@@ -219,7 +214,7 @@ BEGIN
         c_template
         , range_type
         , subtype
-        , creation_function
+        , creation_function::regproc -- Recast to get just function name
     );
     RAISE DEBUG 'executing sql: %', sql;
     EXECUTE sql;
