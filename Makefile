@@ -1,7 +1,7 @@
 include pgxntool/base.mk
 
-PG94 = (call test, $(MAJORVER), -eq, 94)
-LT94 = (call test, $(MAJORVER), -lt, 94)
+PG94 = $(call test, $(MAJORVER), -eq, 94)
+LT94 = $(call test, $(MAJORVER), -lt, 94)
 
 ifeq ($(LT94),yes)
 $(error Minimum version of PostgreSQL required is 9.4.0)
@@ -18,3 +18,5 @@ endif
 
 sql/range_type_functions.sql: $(PGVER_FILES)
 	cat $^ > $@
+
+EXTRA_CLEAN += sql/range_type_functions.sql
