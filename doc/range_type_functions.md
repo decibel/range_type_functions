@@ -9,28 +9,28 @@ Functions available in all releases of this extension.
 A polymorphic range constructor.
 
 ```sql
-function to_range( low anyelement, high anyelement, bounds text, range anyrange) returns anyrange
+function to_range(range anyrange, low anyelement, high anyelement, bounds text DEFAULT '[)') returns anyrange
 ```
 
 Create a range of **low**,**high** with the bounds specified by **bounds**.
 
 #### Parameters:
 
+* **range**: the type of the range to be created.
 * **low**: The low-bound element value
 * **high**: The high-bound element value
 * **bounds**: The inclusivity/exclusivity bounds of the range, must be one of the following: '()', '(]', '[)', '[]'
-* **range**: the type of the range to be created.
 
 #### Example
 
 ```sql
-select to_range(4,5,'[]',null::int4range);
+select to_range(null::int4range,4,5,'[]');
  to_range 
 ----------
  [4,6)
 (1 row)
 
-select to_range('2015-01-01'::date,'2016-01-1','[)',null::daterange);
+select to_range(null::daterange,'2015-01-01'::date,'2016-01-1','[)');
         to_range         
 -------------------------
  [2015-01-01,2016-01-01)
@@ -38,20 +38,42 @@ select to_range('2015-01-01'::date,'2016-01-1','[)',null::daterange);
 ```
 
 ```sql
-function to_range( elem anyelement, range anyrange) returns anyrange
+function to_range( range anyrange, elem anyelement ) returns anyrange
 ```
 
 Create a range of [**elem**].
 
 #### Parameters:
-* **elem**: The sole element value that can be contained the result range
 * **range**: the type of the range to be created.
+* **elem**: The sole element value that can be contained the result range
 
 ```sql
-select to_range('2015-01-01'::date,null::daterange);
+select to_range(null::daterange, '2015-01-01'::date);
         to_range         
 -------------------------
  [2015-01-01,2015-01-02)
+(1 row)
+```
+
+### range_from_array()
+These functions will create a range type that spans all the values in the input array.
+
+When the extention is installed, it will create types for all the range types that are in pg_catalog. You can create additional range_from_array() functions by calling `_range_from_array__create(range_type)`.
+
+#### Parameters:
+* **array** an array of a supported type.
+
+```sql
+select range_from_array( array[3,1,9,3] );
+ range_from_array 
+------------------
+ [1,10)
+(1 row)
+
+select range_from_array( array[now(), now() - interval '1 day'] );
+                         range_from_array                          
+-------------------------------------------------------------------
+ ["2016-09-30 16:16:18.516784-05","2016-10-01 16:16:18.516784-05"]
 (1 row)
 ```
 
@@ -60,7 +82,7 @@ select to_range('2015-01-01'::date,null::daterange);
 Perform a strcmp-like comparison an element and a range.
 
 ```sql
-function element_range_comp( element anyelement, range anyrange) returns smallint
+function element_range_comp( range anyrange, element anyelement ) returns smallint
 ```
 
 Return 0 if the element is within the range
@@ -69,19 +91,19 @@ Return 1 if the element is above the upper bound of the range.
 
 #### Example
 ```sql
-select element_range_comp(4,'[10,100]'::int4range);
+select element_range_comp('[10,100]'::int4range, 4);
  element_range_comp 
 --------------------
                  -1
 (1 row)
 
-select element_range_comp(10,'[10,100]'::int4range);
+select element_range_comp('[10,100]'::int4range, 10);
  element_range_comp 
 --------------------
                   0
 (1 row)
 
-select element_range_comp(110,'[10,100]'::int4range);
+select element_range_comp('[10,100]'::int4range, 110);
  element_range_comp 
 --------------------
                   1
@@ -93,7 +115,7 @@ select element_range_comp(110,'[10,100]'::int4range);
 Determine if the range has only one possible element.
 
 ```sql
-function is_singleton( range anyrange) returns boolean
+function is_singleton( range anyrange ) returns boolean
 ```
 
 Returns true if the range is inclusive on both sides and the low element matches the high element.
