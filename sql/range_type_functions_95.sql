@@ -195,7 +195,7 @@ BEGIN
         $$%1$s(%2$s, %2$s, text)$$
         , t.range_type -- Blindly assume function has same name as the range type
         , range_subtype
-      )::regprocedure -- Note that this gets cast back to regproc
+      )::regprocedure::oid -- Note that this gets cast back to regproc. Cast to OID is mandatory for 9.4
     FROM range_type t
     WHERE t.range_type = _range_from_array__create.range_type
   ;

@@ -3,7 +3,6 @@
 \i test/pgxntool/psql.sql
 
 BEGIN;
--- NOTE! This is NOT the .sql file!
 \i sql/range_type_functions.sql
 
 \echo # TRANSACTION INTENTIONALLY LEFT OPEN!
