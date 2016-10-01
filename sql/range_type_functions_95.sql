@@ -168,6 +168,11 @@ SET search_path FROM CURRENT -- This is necessary for having access to the range
 AS $_range_from_array__create$
 DECLARE
   subtype regtype;
+
+  /*
+   * THIS IS INTENTIONALLY regproc! Using regproc ensures we get an error if
+   * the function isn't unique.
+   */
   creation_function regproc;
 
   c_template CONSTANT text := $template$
