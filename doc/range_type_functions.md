@@ -1,5 +1,9 @@
 # Range Type Functions
 
+## Views
+### range_types
+This view denormalizes most of the information about all of the range types in the system. It is based on the `pg_range` catalog table.
+
 ## Functions
 
 Functions available in all releases of this extension.
