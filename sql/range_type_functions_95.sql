@@ -17,7 +17,7 @@ CREATE OR REPLACE VIEW range_type AS
       LEFT JOIN pg_namespace ocn ON ocn.oid = oc.opcnamespace
 ;
 
-create function to_range(low anyelement, high anyelement, bounds text, range anyrange) returns anyrange
+create function to_range(range anyrange, low anyelement, high anyelement, bounds text DEFAULT '[)') returns anyrange
 language plpgsql immutable as $$
 declare
     l_range text;
@@ -27,27 +27,27 @@ begin
 end
 $$;
 
-comment on function to_range(low anyelement, high anyelement, bounds text, range anyrange)
+comment on function to_range(range anyrange, low anyelement, high anyelement, bounds text)
 is E'Given a lower bound, upper bound, bounds description, return a range of the given range type.';
 
-create function to_range(elem anyelement, range anyrange) returns anyrange
+create function to_range(range anyrange, elem anyelement) returns anyrange
 language sql immutable set search_path from current as $$
-select to_range(elem,elem,'[]',range);
+select to_range(range,elem,elem,'[]');
 $$;
 
-comment on function to_range(elem anyelement, range anyrange)
+comment on function to_range(range anyrange, elem anyelement)
 is E'Convert an element e into the range [e].';
 
-create function element_range_comp(element anyelement, range anyrange) returns smallint
+create function element_range_comp(range anyrange, element anyelement) returns smallint
 language sql strict immutable set search_path from current as $$
 select  case
-            when to_range(element,range) << range then -1::smallint
-            when to_range(element,range) <@ range then 0::smallint
-            when to_range(element,range) >> range then 1::smallint
+            when to_range(range,element) << range then -1::smallint
+            when to_range(range,element) <@ range then 0::smallint
+            when to_range(range,element) >> range then 1::smallint
         end;
 $$;
 
-comment on function element_range_comp(anyelement,anyrange)
+comment on function element_range_comp(anyrange, anyelement)
 is E'Perform a strcmp-like comparison of an element and a range type.\n'
     'Return 0 if the element is within the range.\n'
     'Return -1 if the element is below the lower bound of the range.\n'
@@ -55,7 +55,7 @@ is E'Perform a strcmp-like comparison of an element and a range type.\n'
 
 create function is_singleton(range anyrange) returns boolean
 language sql immutable set search_path from current as $$
-select range is not distinct from to_range(lower(range),range);
+select range is not distinct from to_range(range,lower(range));
 --select lower_inc(range) and upper_inc(range) and lower(range) = upper(range);
 $$;
 

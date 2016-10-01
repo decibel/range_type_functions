@@ -1,0 +1,7 @@
+\set ECHO none
+1..4
+ok 1 - to_range from now() +/- 1us
+ok 2 - to_range from timezone test
+ok 3 - now() +/- 1us
+ok 4 - timezone test
+# TRANSACTION INTENTIONALLY LEFT OPEN!

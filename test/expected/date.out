@@ -1,0 +1,5 @@
+\set ECHO none
+1..2
+ok 1 - to_range from current_date +/- 1
+ok 2 - current_date +/- 1
+# TRANSACTION INTENTIONALLY LEFT OPEN!

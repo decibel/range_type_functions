@@ -1,234 +1,73 @@
-begin;
 \set ECHO none
-create type textrange as range (subtype = text);
-create type textrange_c as range (subtype = text, collation = "C");
-set datestyle = 'ISO';
-select to_range(4,5,'[]',null::int4range);
- to_range 
-----------
- [4,6)
-(1 row)
-
-select to_range('2015-01-01'::date,'2016-01-1','[)',null::daterange);
-        to_range         
--------------------------
- [2015-01-01,2016-01-01)
-(1 row)
-
-select to_range(4,null::int4range);
- to_range 
-----------
- [4,5)
-(1 row)
-
-select to_range('2015-01-01'::date,null::daterange);
-        to_range         
--------------------------
- [2015-01-01,2015-01-02)
-(1 row)
-
-select element_range_comp(4,'[10,100]'::int4range);
- element_range_comp 
---------------------
-                 -1
-(1 row)
-
-select element_range_comp(10,'[10,100]'::int4range);
- element_range_comp 
---------------------
-                  0
-(1 row)
-
-select element_range_comp(110,'[10,100]'::int4range);
- element_range_comp 
---------------------
-                  1
-(1 row)
-
-select is_singleton('[4,5)'::int4range);
- is_singleton 
---------------
- t
-(1 row)
-
-select is_singleton('[4,5]'::int4range);
- is_singleton 
---------------
- f
-(1 row)
-
+1..9
+ok 1
+ok 2
+ok 3
+ok 4
+ok 5 - element_range_comp('[10,100]'::int4range, 4)
+ok 6 - element_range_comp('[10,100]'::int4range, 10)
+ok 7 - element_range_comp('[10,100]'::int4range, 110)
+ok 8 - is_singleton('[4,5)'::int4range)
+ok 9 - is_singleton('[4,5]'::int4range)
 select range_merge('[4,5]'::int4range,'[9,10]'::int4range);
- range_merge 
--------------
- [4,11)
-(1 row)
-
+[4,11)
 select get_lower_bound_condition_expr('empty'::int4range);
- get_lower_bound_condition_expr 
---------------------------------
- false
-(1 row)
-
+false
 select get_lower_bound_condition_expr('(,)'::int4range);
- get_lower_bound_condition_expr 
---------------------------------
- true
-(1 row)
-
+true
 select get_lower_bound_condition_expr('(4,5]'::int4range);
- get_lower_bound_condition_expr 
---------------------------------
- x >= '5'::integer
-(1 row)
-
+x >= '5'::integer
 select get_lower_bound_condition_expr('(4,5]'::int4range,'y.z');
- get_lower_bound_condition_expr 
---------------------------------
- y.z >= '5'::integer
-(1 row)
-
+y.z >= '5'::integer
 select get_lower_bound_condition_expr('[4,5]'::int4range,'y.z');
- get_lower_bound_condition_expr 
---------------------------------
- y.z >= '4'::integer
-(1 row)
-
+y.z >= '4'::integer
 select get_lower_bound_condition_expr('[4,5]'::int4range,format('%I.%I','my schema','my ColuMnaME'));
-       get_lower_bound_condition_expr       
---------------------------------------------
- "my schema"."my ColuMnaME" >= '4'::integer
-(1 row)
-
+"my schema"."my ColuMnaME" >= '4'::integer
 select get_upper_bound_condition_expr('empty'::int4range);
- get_upper_bound_condition_expr 
---------------------------------
- false
-(1 row)
-
+false
 select get_upper_bound_condition_expr('(,)'::int4range);
- get_upper_bound_condition_expr 
---------------------------------
- true
-(1 row)
-
+true
 select get_upper_bound_condition_expr('[4,5)'::int4range,'y.z');
- get_upper_bound_condition_expr 
---------------------------------
- y.z < '5'::integer
-(1 row)
-
+y.z < '5'::integer
 select get_upper_bound_condition_expr('[4,5]'::int4range,'y.z');
- get_upper_bound_condition_expr 
---------------------------------
- y.z < '6'::integer
-(1 row)
-
+y.z < '6'::integer
 select get_upper_bound_condition_expr('[ABEL,BAKER)'::textrange,'y.z');
-             get_upper_bound_condition_expr              
----------------------------------------------------------
- y.z COLLATE "default" < 'BAKER'::text COLLATE "default"
-(1 row)
-
+y.z COLLATE "default" < 'BAKER'::text COLLATE "default"
 select get_upper_bound_condition_expr('[ABEL,BAKER)'::textrange_c,'y.z');
-       get_upper_bound_condition_expr        
----------------------------------------------
- y.z COLLATE "C" < 'BAKER'::text COLLATE "C"
-(1 row)
-
+y.z COLLATE "C" < 'BAKER'::text COLLATE "C"
 select get_bounds_condition_expr('empty'::int4range);
- get_bounds_condition_expr 
----------------------------
- false
-(1 row)
-
+false
 select get_bounds_condition_expr('(,)'::int4range);
- get_bounds_condition_expr 
----------------------------
- true
-(1 row)
-
+true
 select get_bounds_condition_expr('(4,5]'::int4range);
-       get_bounds_condition_expr        
-----------------------------------------
- x >= '5'::integer and x < '6'::integer
-(1 row)
-
+x >= '5'::integer and x < '6'::integer
 select get_bounds_condition_expr('(4,5]'::int4range,'y.z');
-         get_bounds_condition_expr          
---------------------------------------------
- y.z >= '5'::integer and y.z < '6'::integer
-(1 row)
-
+y.z >= '5'::integer and y.z < '6'::integer
 select get_bounds_condition_expr('[4,5]'::int4range,'y.z');
-         get_bounds_condition_expr          
---------------------------------------------
- y.z >= '4'::integer and y.z < '6'::integer
-(1 row)
-
+y.z >= '4'::integer and y.z < '6'::integer
 select get_bounds_condition_expr('[4,5)'::int4range,'y.z');
-         get_bounds_condition_expr          
---------------------------------------------
- y.z >= '4'::integer and y.z < '5'::integer
-(1 row)
-
+y.z >= '4'::integer and y.z < '5'::integer
 select get_bounds_condition_expr('[4,5]'::int4range,'y.z');
-         get_bounds_condition_expr          
---------------------------------------------
- y.z >= '4'::integer and y.z < '6'::integer
-(1 row)
-
+y.z >= '4'::integer and y.z < '6'::integer
 select get_collation_expr(null::int4range);
- get_collation_expr 
---------------------
- 
-(1 row)
 
 select get_collation_expr(null::textrange);
- get_collation_expr 
---------------------
-  COLLATE "default"
-(1 row)
-
+ COLLATE "default"
 select get_collation_expr(null::textrange_c);
- get_collation_expr 
---------------------
-  COLLATE "C"
-(1 row)
-
+ COLLATE "C"
 select get_subtype_element_expr('(4,5]'::int4range);
- get_subtype_element_expr 
---------------------------
- x
-(1 row)
-
+x
 select get_subtype_element_expr('[ABEL,BAKER)'::textrange_c);
- get_subtype_element_expr 
---------------------------
- x COLLATE "C"
-(1 row)
-
+x COLLATE "C"
 select get_bound_expr(null::int4range,'4');
- get_bound_expr 
-----------------
- '4'::integer
-(1 row)
-
+'4'::integer
 select get_bound_expr(null::daterange,'1991-09-23');
-   get_bound_expr   
---------------------
- '1991-09-23'::date
-(1 row)
-
+'1991-09-23'::date
 select get_bound_expr(null::textrange,'ABEL');
-         get_bound_expr         
---------------------------------
- 'ABEL'::text COLLATE "default"
-(1 row)
-
+'ABEL'::text COLLATE "default"
 select get_bound_expr(null::textrange_c,'ABEL');
-      get_bound_expr      
---------------------------
- 'ABEL'::text COLLATE "C"
-(1 row)
-
-rollback;
+'ABEL'::text COLLATE "C"
+\i test/pgxntool/finish.sql
+SELECT finish();
+\echo # TRANSACTION INTENTIONALLY LEFT OPEN!
+# TRANSACTION INTENTIONALLY LEFT OPEN!
