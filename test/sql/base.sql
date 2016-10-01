@@ -7,6 +7,7 @@ SELECT plan(
     + 4 -- to_range
     + 3 -- element_range_comp
     + 2 -- is_singleton
+    + 3 -- get_collation_expr
 );
 
 create type textrange as range (subtype = text);
@@ -64,6 +65,22 @@ select is(
     , $$is_singleton('[4,5]'::int4range)$$
 );
 
+select is(
+    get_collation_expr(null::int4range)
+    , NULL
+    , $$get_collation_expr(null::int4range)$$
+);
+select is(
+    get_collation_expr(null::textrange)
+    , ' COLLATE "default"'
+    , $$get_collation_expr(null::textrange)$$
+);
+select is(
+    get_collation_expr(null::textrange_c)
+    , ' COLLATE "C"'
+    , $$get_collation_expr(null::textrange_c)$$
+);
+
 \set ECHO ALL
 
 select range_merge('[4,5]'::int4range,'[9,10]'::int4range);
@@ -87,11 +104,6 @@ select get_bounds_condition_expr('(4,5]'::int4range,'y.z');
 select get_bounds_condition_expr('[4,5]'::int4range,'y.z');
 select get_bounds_condition_expr('[4,5)'::int4range,'y.z');
 select get_bounds_condition_expr('[4,5]'::int4range,'y.z');
-
-select get_collation_expr(null::int4range);
-select get_collation_expr(null::textrange);
-select get_collation_expr(null::textrange_c);
-
 
 select get_subtype_element_expr('(4,5]'::int4range);
 select get_subtype_element_expr('[ABEL,BAKER)'::textrange_c);
